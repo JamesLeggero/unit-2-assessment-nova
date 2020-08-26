@@ -13,7 +13,7 @@ const PORT = process.env.PORT || 3000
 app.use(express.static('public')) //for grabbing/linking css and js
 app.use(express.urlencoded({extended : false})) //for req.body
 app.set('view engine', 'jsx') //to dictate our VE language
-app.engine('jsx', require('express-react-views')).createEngine()
+app.engine('jsx', require('express-react-views').createEngine())
 app.use(methodOverride('_method')) //to utilize patch, put, delete routes
 
 //db
@@ -26,7 +26,17 @@ db.once('open', ()=>{
 const Todo = require('./models/todos')
 
 app.get('/', (req, res)=>{
-    res.send('static up')
+    Todo.find({}, (err, allTodos)=>{
+        if (err) {
+            res.status(500).send({
+                error: err.message
+            })
+        } else {
+            res.render('Index', {
+                todos: allTodos
+            })
+        }
+    })
 })
 
 
