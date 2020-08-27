@@ -18,7 +18,7 @@ app.use(methodOverride('_method')) //to utilize patch, put, delete routes
 
 //db
 const mongoURI = process.env.MONGO_URI
-mongoose.connect(mongoURI, { useNewUrlParser : true, useUnifiedTopology : true, useFindAndModify : true })
+mongoose.connect(mongoURI, { useNewUrlParser : true, useUnifiedTopology : true, useFindAndModify : false })
 db.once('open', ()=>{
     console.log('mongo connected')
 })
@@ -38,6 +38,33 @@ app.get('/', (req, res)=>{
         }
     })
 })
+
+app.post('/', (req, res)=>{
+    Todo.create(req.body, (err, createdTodo)=>{
+        if (err) {
+            res.status(500).send({
+                error: err.message
+            })
+        } else {
+            res.redirect('/')
+        }
+    })
+})
+
+app.delete('/:id', (req, res)=>{
+    Todo.findByIdAndRemove(req.params.id, (err, deletedTodo)=>{
+        if (err) {
+            res.status(500).send({
+                error: err.message
+            })
+        } else {
+            res.redirect('/')
+        }
+    })
+
+})
+
+
 
 
 
